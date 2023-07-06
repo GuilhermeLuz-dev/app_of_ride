@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "cz-conventional-changelog": "^1.0.1"
+    "cz-conventional-changelog": "^1.2.0"
   },
   "config": {
     "commitizen": {
