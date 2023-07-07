@@ -31,6 +31,10 @@ function addNewRide(rideId, position) {
         saveRideRecord(rideId, rideRecord)
 }
 
+function getAllRides(){
+    return Object.entries(localStorage);
+}
+
 function getRideRecord(rideId) {
     return JSON.parse(localStorage.getItem(rideId))
 }
