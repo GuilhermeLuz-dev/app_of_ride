@@ -1,19 +1,18 @@
-const rideItemElement = document.querySelector("#rideList")
+const param = new URLSearchParams(document.location.search)
+const id = param.get('id')
 
-const allRides = getAllRides();
+const ride = getRideRecord(id)
 
-allRides.forEach(async ([id, value]) => {
-    const ride = JSON.parse(value)
-    ride.id = id
-    console.log(ride.data[0])
-    const itemElement = document.createElement("li")
+const map = L.map('mapDetail')
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+
+	const data = document.querySelector('#data')
+
+	const itemElement = document.createElement("li")
     itemElement.id = ride.id
     itemElement.className = "d-flex align-items-center mt-3 bg bg-success text-white rounded-3 p-2"
     
-    itemElement.addEventListener('click', ()=>{
-        window.location.href = `./detail.html?id=${ride.id}`;
-    })
-    rideItemElement.appendChild(itemElement)
 
     const dataElements = document.createElement('div')
 
@@ -55,5 +54,30 @@ allRides.forEach(async ([id, value]) => {
 
     itemElement.appendChild(mapDiv);
     itemElement.appendChild(dataElements);
+	data.appendChild(itemElement)
 
+	const deleteBTN = document.querySelector('#deleteBtn')
+
+	deleteBTN.addEventListener('click', ()=>{
+		deleteRide(id)
+		window.location.href = "./"
+
+	})
+	
+	map.setView([firstPosition.latitude, firstPosition.longitude], 10)
+	
+	L.tileLayer('https://tile.openstreetmap.de/{z}/{x}/{y}.png', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	
+	console.log(ride.data)
+	
+	const positionsArray = ride.data.map((position)=>{
+		return [position.latitude, position.longitude]
+	})
+	
+	const polyline = L.polyline(positionsArray, {color:"red"}).addTo(map)
+	
+	map.fitBounds(polyline.getBounds());
 })

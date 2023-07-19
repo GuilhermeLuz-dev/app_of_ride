@@ -15,7 +15,6 @@ function saveRideRecord(rideId, rideRecord) {
 
 function addNewRide(rideId, position) {
     const rideRecord = getRideRecord(rideId)
-    console.log(position);
     const newData = {
         accuracy:position.coords.accuracy,
         altitude:position.coords.altitude,
@@ -43,4 +42,7 @@ function updateStoptime(currentRide){
     const rideRecord = getRideRecord(currentRide)
     rideRecord.stopTime = Date.now()
     saveRideRecord(currentRide, rideRecord);
+}
+function deleteRide(id){
+    localStorage.removeItem(id)
 }
