@@ -5,24 +5,29 @@ const allRides = getAllRides();
 allRides.forEach(async ([id, value]) => {
     const ride = JSON.parse(value)
     ride.id = id
-    console.log(ride.data[0])
     const itemElement = document.createElement("li")
     itemElement.id = ride.id
     itemElement.className = "d-flex align-items-center mt-3 bg bg-success text-white rounded-3 p-2"
+    itemElement.style = "cursor:pointer"
     
     itemElement.addEventListener('click', ()=>{
         window.location.href = `./detail.html?id=${ride.id}`;
     })
     rideItemElement.appendChild(itemElement)
-
+    
     const dataElements = document.createElement('div')
-
+    
     const firstPosition = ride.data[0];
     const firstPositionData = await getLocationData(firstPosition.latitude, firstPosition.longitude);
-
-
+    
+    const mapId = `map${ride.id}`
     const mapDiv = document.createElement("div")
-    mapDiv.className = "bg bg-primary rounded-3 mapStyle me-2"
+    mapDiv.id = mapId
+    mapDiv.style = "width:100px; height:100px " 
+    mapDiv.classList.add("bg-primary")
+    mapDiv.classList.add("rounded-3")
+    mapDiv.classList.add("me-3")
+   
 
    
 
@@ -55,5 +60,29 @@ allRides.forEach(async ([id, value]) => {
 
     itemElement.appendChild(mapDiv);
     itemElement.appendChild(dataElements);
+
+    const map = L.map(mapId, {
+        attributionControl: false,
+        zoomControl: false,
+        dragging: false,
+        scrollWheelZoom: false
+    })
+
+    map.setView([firstPosition.latitude, firstPosition.longitude], 10)
+	
+	L.tileLayer('https://tile.openstreetmap.de/{z}/{x}/{y}.png', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	
+	console.log(ride.data)
+	
+	const positionsArray = ride.data.map((position)=>{
+		return [position.latitude, position.longitude]
+	})
+	
+	const polyline = L.polyline(positionsArray, {color:"red"}).addTo(map)
+	
+	map.fitBounds(polyline.getBounds());
 
 })
